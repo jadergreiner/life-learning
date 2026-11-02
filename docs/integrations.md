@@ -17,3 +17,12 @@ Checklist de verificação manual: configuração no Notion; amostra de sessão 
 ## Observações
 
 Esta documentação sincroniza **contratos e links**, não conteúdos pessoais nem bytes dos documentos. Nenhum workflow automático do GitHub, publicação de plugin ou mecanismo de espelhamento do Drive foi ativado.
+
+## Verificação de 01/11/2026
+
+- GitHub: documentação inicial publicada no branch `main`.
+- Notion: catálogo do piloto contém ligação para este repositório; cadência operacional preservada.
+- Plugin: atualizado para **0.2.1**, com skill `source-contract` apontando para contratos GitHub e fontes Notion/Drive; publicação confirmada por leitura posterior.
+- Google Drive: leitura dos documentos históricos confirmada; **tentativa de criar um novo documento de índice negada com HTTP 403 PERMISSION_DENIED**. Nenhum documento do Drive foi modificado. A sincronização com Drive permanece apenas referencial até conceder escrita.
+
+Não existe job automático de sincronização ativo nem espelhamento de conteúdo. Publicação do plugin e commits do GitHub são operações distintas.
