@@ -34,3 +34,13 @@ Evidências: desafios a frio, artefatos, testes positivos e negativos, métricas
 Perspectivas são simuladas por IA, não revisores independentes nem tarefas em segundo plano. Preservar divergências; convocar fórum em decisões estratégicas, impasses, estagnação ou avaliações críticas.
 
 Fonte normativa experimental: [catálogo do Notion](https://app.notion.com/p/40c02f2729f981c2bb7acd89a631d32c).
+
+## Protocolo de avaliação, fechamento e recuperação (revisão de 02/11/2026)
+
+- A avaliação oral a frio deve distinguir evidência independente de aprendizagem orientada. Uma explicação correta após dicas e demonstrações não basta para promoção automática a N3.
+- Em falhas entre efeitos externos e commit local, exigir distinção explícita entre integridade do estado no banco e entrega/execução fora dele. Uma confirmação local não prova efeito externo único.
+- Em laboratório de confiabilidade (ED-05), avaliar: transações curtas, aquisição atômica de leases, expiração, concorrência, fencing tokens, retries, falhas após HTTP 200, observabilidade, testes de recuperação e limites do exactly-once sem idempotência do provedor.
+- Fencing tokens podem impedir atualização de estado por workers obsoletos, mas, sem validação pelo sistema externo, não garantem ausência de duplicidade na API HTTP.
+- Requerer decisão de política de entrega por criticidade e discussão de duplicidade, omissão e validade temporal, com garantias condicionais e riscos residuais explícitos.
+- No encerramento de uma revisão extra, registrar as evidências no catálogo e o fato da sessão no Notion sem inventar minutos ou alterar ciclo/posição. A revisão espaçada usa o deck Recall canônico definido em [contrato de fontes](sources-of-truth.md).
+- O próximo gate de comprovação de autonomia é um laboratório reproduzível e uma reavaliação sem consulta; a cadência regular não é afetada pelo diagnóstico.
