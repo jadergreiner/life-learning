@@ -36,3 +36,13 @@
 ## Cadência vigente
 
 P1 CASE-SPEC-ITAU; P2 AWS AIF-C01; P3 PREPARAÇÃO; P4 SYSTEMS DESIGN; P5 ROADMAP DATA ENGINEER; P6 LEITURA; P7 INGLÊS; P8 DATABRICKS. P8 → P1 incrementando ciclo. Bloco padrão 50 minutos, pausa 10. Esta tabela é **snapshot** de 29/10/2026, não configuração executável: o Notion prevalece.
+
+## Recall — deck canônico do Life Learning (02/11/2026)
+
+- Deck único para **novos flashcards do método Life Learning**: [LIFE LEARNING — Revisão Integrada](https://recall.cards/app/decks/etzhanpbigllkhrjmqxe).
+- ID de execução Recall: `deck_0GNiZtx9jIeh`. O deck foi renomeado, preservando cartões e histórico de revisão; o acervo anterior permanece intocado, sem migração automática.
+- **Notion continua a fonte da verdade** para sessões, ciclos, posição, competências, decisões e evidências pedagógicas. Recall é fonte operacional de cartões e agendamento espaçado, não de domínio técnico ou conclusão de sessão.
+- Ao registrar revisão: consultar o Notion, identificar lacunas, buscar cartas existentes, adicionar somente cartões atômicos novos ao deck canônico, conferir persistência e não criar decks paralelos.
+- A atualização do plugin é independente do versionamento GitHub. Plugin Life Learning v0.2.2 confirmou o contrato de integração Recall/Notion.
+- Não publicar no GitHub público histórico individual, notas, pontuações, respostas de avaliação ou dados pessoais. Registros pedagógicos permanecem no Notion.
+- Uma sessão extra de revisão não avança a cadência vigente de oito posições. Nenhum tempo deve ser inferido quando a duração líquida não for fornecida.
