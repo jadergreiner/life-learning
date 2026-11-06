@@ -202,3 +202,19 @@ A constraint composta do evento também fez o teste de reentrega revelar que `ON
 4. Confirme que não restaram contas `TST-%` e que `ACC-001` segue com saldo R$ 200,00.
 
 Verificação realizada em 05/11/2026: migração aplicada nos dois bancos; constraints confirmadas no catálogo; suíte retornou `11 passed in 0.75s`; nenhum dado de teste permaneceu e os containers continuaram saudáveis.
+
+## Etapa 5 — contenção simultânea controlada
+
+O T04 foi fortalecido em `tests/test_event_processing.py`. Antes das chamadas HTTP, o teste abre uma transação PostgreSQL e insere o evento sem commit, mantendo a chave única de `event_id` reservada. As requisições para `api_a` e `api_b` partem por uma barreira. O teste consulta `pg_stat_activity` e só libera a transação quando confirma que ambas estão ativas, aguardando lock do tipo `transactionid` e bloqueadas pelo PID da mesma transação que reservou o evento. Isso comprova a disputa simultânea no ponto da inserção idempotente; a barreira do cliente sozinha não faria essa comprovação.
+
+Um segundo ensaio repete a contenção por cinco rodadas, com 12 requisições simultâneas (seis por instância) ao mesmo evento em cada rodada. Em cada rodada, uma requisição aplica o efeito e as outras 11 são idempotentes. Os testes usam contas e eventos temporários e os fixtures fazem a limpeza ao final.
+
+### Conferência da concorrência controlada
+
+1. Confirme os containers saudáveis com `docker compose ps`.
+2. Execute `docker compose --profile test run --build --rm test_runner`.
+3. A suíte atual deve retornar `12 passed`.
+4. O T04 controlado exige dois backends simultaneamente bloqueados; o ensaio de carga exige 12 backends bloqueados em cada uma das cinco rodadas.
+5. Confirme que não restaram contas `TST-%` e que o saldo de `ACC-001` não foi alterado pela suíte.
+
+Verificação realizada em 05/11/2026: a suíte retornou `12 passed in 3.69s`; T04 observou os waiters esperados em todos os ensaios; os containers permaneceram saudáveis; não restaram contas de teste e `ACC-001` permaneceu em R$ 220,00, sem alteração pela suíte.

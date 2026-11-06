@@ -4,6 +4,8 @@ import json
 import os
 from concurrent.futures import ThreadPoolExecutor
 from decimal import Decimal
+from threading import Barrier
+from time import monotonic, sleep
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 from uuid import uuid4
@@ -49,6 +51,80 @@ def payload_for(account_id: str, event_id: str, operation: str, amount: str) -> 
     }
 
 
+def run_controlled_contention(
+    payload: dict[str, str],
+    urls: list[str],
+) -> tuple[list[tuple[int, dict[str, object]]], int]:
+    """Hold the event's unique key, then release all API workers into the conflict together."""
+    worker_count = len(urls)
+    barrier = Barrier(worker_count + 1)
+    blocker = get_engine().connect()
+    blocker_transaction = blocker.begin()
+    blocker_pid = blocker.execute(text("SELECT pg_backend_pid()")).scalar_one()
+    blocker.execute(
+        text(
+            "INSERT INTO lab01.inbound_events "
+            "(event_id, account_id, operation, amount, currency, status_evento) "
+            "VALUES (:event_id, :account_id, :operation, :amount, :currency, 'RECEIVED')"
+        ),
+        {
+            "event_id": payload["event_id"],
+            "account_id": payload["account_id"],
+            "operation": payload["operation"],
+            "amount": payload["amount"],
+            "currency": payload["currency"],
+        },
+    )
+
+    executor = ThreadPoolExecutor(max_workers=worker_count)
+    futures = [
+        executor.submit(_post_after_barrier, barrier, url, payload)
+        for url in urls
+    ]
+    observed_waiters = 0
+    try:
+        barrier.wait(timeout=10)
+        observed_waiters = _wait_for_blocked_event_inserts(blocker_pid, worker_count)
+    finally:
+        blocker_transaction.commit()
+        executor.shutdown(wait=True)
+        blocker.close()
+
+    results = [future.result(timeout=20) for future in futures]
+    return results, observed_waiters
+
+
+def _post_after_barrier(
+    barrier: Barrier,
+    url: str,
+    payload: dict[str, str],
+) -> tuple[int, dict[str, object]]:
+    barrier.wait(timeout=10)
+    return post_event(url, payload)
+
+
+def _wait_for_blocked_event_inserts(blocker_pid: int, expected: int) -> int:
+    deadline = monotonic() + 10
+    while monotonic() < deadline:
+        with get_engine().connect() as connection:
+            blocked_pids = connection.execute(
+                text(
+                    "SELECT pid FROM pg_stat_activity "
+                    "WHERE datname = current_database() "
+                    "AND state = 'active' "
+                    "AND wait_event_type = 'Lock' "
+                    "AND wait_event = 'transactionid' "
+                    "AND query ILIKE 'INSERT INTO lab01.inbound_events%' "
+                    "AND :blocker_pid = ANY(pg_blocking_pids(pid))"
+                ),
+                {"blocker_pid": blocker_pid},
+            ).scalars().all()
+        if len(blocked_pids) >= expected:
+            return len(blocked_pids)
+        sleep(0.02)
+    return len(blocked_pids)
+
+
 def test_t01_t02_t03_basic_scenario_and_redeliveries(test_account_id: str) -> None:
     suffix = uuid4().hex[:8]
     credit = payload_for(test_account_id, f"EVT-123-{suffix}", "CREDIT", "100.00")
@@ -74,12 +150,33 @@ def test_t01_t02_t03_basic_scenario_and_redeliveries(test_account_id: str) -> No
 
 def test_t04_two_workers_apply_same_event_once(test_account_id: str) -> None:
     payload = payload_for(test_account_id, f"EVT-125-{uuid4().hex[:8]}", "CREDIT", "100.00")
-    with ThreadPoolExecutor(max_workers=2) as workers:
-        results = list(workers.map(lambda url: post_event(url, payload), [API_A, API_B]))
+    results, observed_waiters = run_controlled_contention(payload, [API_A, API_B])
 
+    assert observed_waiters == 2
     assert [status for status, _ in results] == [200, 200]
     assert sum(bool(result["effect_applied"]) for _, result in results) == 1
     assert get_balance(API_A, test_account_id) == Decimal("300.00")
+
+
+def test_t04_repeated_same_event_contention_under_load(test_account_id: str) -> None:
+    worker_count = 12
+    round_count = 5
+    urls = [API_A, API_B] * (worker_count // 2)
+
+    for round_number in range(round_count):
+        payload = payload_for(
+            test_account_id,
+            f"EVT-LOAD-{round_number}-{uuid4().hex[:8]}",
+            "CREDIT",
+            "1.00",
+        )
+        results, observed_waiters = run_controlled_contention(payload, urls)
+
+        assert observed_waiters == worker_count
+        assert [status for status, _ in results] == [200] * worker_count
+        assert sum(bool(result["effect_applied"]) for _, result in results) == 1
+
+    assert get_balance(API_A, test_account_id) == Decimal("205.00")
 
 
 def test_t05_failure_before_commit_rolls_back_all_changes(
