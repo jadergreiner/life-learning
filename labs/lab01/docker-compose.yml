@@ -1,0 +1,109 @@
+x-api-common: &api-common
+  build:
+    context: .
+    dockerfile: Dockerfile
+  depends_on:
+    postgres:
+      condition: service_healthy
+  environment:
+    DB_DRIVER: postgresql+psycopg
+    DB_HOST: postgres
+    DB_PORT: "5432"
+    DB_NAME: ${DB_NAME:-pipeline_financeiro}
+    DB_USER: ${DB_USER:-pipeline}
+    DB_PASSWORD: ${DB_PASSWORD:-pipeline}
+    DB_ECHO: "false"
+    DB_POOL_SIZE: "5"
+    DB_MAX_OVERFLOW: "10"
+    DB_POOL_TIMEOUT: "30"
+  healthcheck:
+    test:
+      - CMD
+      - python
+      - -c
+      - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=3)"
+    interval: 10s
+    timeout: 5s
+    retries: 5
+    start_period: 10s
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${DB_NAME:-pipeline_financeiro}
+      POSTGRES_USER: ${DB_USER:-pipeline}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-pipeline}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init/001_schema.sql:/docker-entrypoint-initdb.d/001_schema.sql:ro
+    ports:
+      - "127.0.0.1:5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    restart: unless-stopped
+
+  api_a:
+    <<: *api-common
+    environment:
+      DB_DRIVER: postgresql+psycopg
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: ${DB_NAME:-pipeline_financeiro}
+      DB_USER: ${DB_USER:-pipeline}
+      DB_PASSWORD: ${DB_PASSWORD:-pipeline}
+      DB_ECHO: "false"
+      DB_POOL_SIZE: "5"
+      DB_MAX_OVERFLOW: "10"
+      DB_POOL_TIMEOUT: "30"
+      INSTANCE_ID: "A"
+    ports:
+      - "127.0.0.1:8001:8000"
+    restart: unless-stopped
+
+  api_b:
+    <<: *api-common
+    environment:
+      DB_DRIVER: postgresql+psycopg
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: ${DB_NAME:-pipeline_financeiro}
+      DB_USER: ${DB_USER:-pipeline}
+      DB_PASSWORD: ${DB_PASSWORD:-pipeline}
+      DB_ECHO: "false"
+      DB_POOL_SIZE: "5"
+      DB_MAX_OVERFLOW: "10"
+      DB_POOL_TIMEOUT: "30"
+      INSTANCE_ID: "B"
+    ports:
+      - "127.0.0.1:8002:8000"
+    restart: unless-stopped
+
+  test_runner:
+    profiles: ["test"]
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    depends_on:
+      postgres:
+        condition: service_healthy
+      api_a:
+        condition: service_healthy
+      api_b:
+        condition: service_healthy
+    environment:
+      DB_DRIVER: postgresql+psycopg
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: ${DB_NAME:-pipeline_financeiro}
+      DB_USER: ${DB_USER:-pipeline}
+      DB_PASSWORD: ${DB_PASSWORD:-pipeline}
+      TEST_API_A_URL: http://api_a:8000
+      TEST_API_B_URL: http://api_b:8000
+
+volumes:
+  postgres_data:
