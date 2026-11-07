@@ -1,6 +1,6 @@
 # SPEC — SDD-0001 lab002-terraform
 
-Status: Rascunho para aprovação do usuário
+Status: Aprovado pelo usuário
 Data: 2026-11-07
 
 ## 1. Visão arquitetural
@@ -121,4 +121,4 @@ Não se aplica: bucket vazio, sem dados de aplicação, pipelines, migrações o
 ## 10. Aprovação
 
 Questões em aberto: nenhuma identificada na SPEC.
-Gate: aguardando aprovação do usuário para avançar ao PLAN.
+Gate: aprovado pelo usuário em 2026-11-07; Etapa 5 (PLAN) iniciada.
