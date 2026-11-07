@@ -1,6 +1,6 @@
 # PRD — SDD-0001 lab002-terraform
 
-Status: Aguardando aprovação do usuário
+Status: Aprovado pelo usuário
 Data: 2026-11-07
 
 ## 1. Objetivo e valor
@@ -11,7 +11,7 @@ Como aluno da especialização em Engenharia de Dados, demonstrar conhecimento d
 
 ### Incluído
 - Um bucket S3 vazio e temporário na região `us-east-1`.
-- Nome do bucket informado como variável e escolhido pelo aluno para ser globalmente único.
+- O aluno informa um prefixo por variável; Terraform deriva o nome no namespace S3 `account-regional` para a conta e região configuradas.
 - Provisionamento e configuração de segurança por Terraform.
 - Validação da existência e das configurações via AWS CLI.
 - Remoção dos recursos gerenciados pelo Terraform após a validação.
@@ -29,7 +29,7 @@ Como aluno da especialização em Engenharia de Dados, demonstrar conhecimento d
 
 | ID | Requisito | Origem |
 |---|---|---|
-| RF-001 | O aluno informa o nome do bucket por variável; o nome precisa ser globalmente único. | PM, PO, BA |
+| RF-001 | O aluno informa um prefixo por variável; Terraform deriva dele o nome do bucket no namespace S3 `account-regional` da conta e região configuradas. | PM, PO, BA, Solution Architect |
 | RF-002 | Terraform permite inicializar, revisar o plano e aplicar a configuração para criar exatamente um bucket S3 em `us-east-1`, acompanhado somente das configurações de segurança requeridas. | Usuário, PO |
 | RF-003 | O bucket permanece privado, com as quatro opções de S3 Block Public Access ativadas e ACLs desativadas (`BucketOwnerEnforced`). | Usuário, BA |
 | RF-004 | O bucket usa criptografia em repouso SSE-S3, sem configuração de chave KMS. | Usuário |
@@ -52,7 +52,7 @@ Como aluno da especialização em Engenharia de Dados, demonstrar conhecimento d
 ## 5. Regras de negócio
 
 - **RN-001:** Apenas um bucket S3 de teste é provisionado por execução.
-- **RN-002:** O nome é fornecido pelo aluno e deve ser globalmente único; colisão deve ser exibida como erro acionável, sem declarar o provisionamento concluído.
+- **RN-002:** O prefixo é fornecido pelo aluno e Terraform deriva o nome do bucket no namespace `account-regional`; colisão dentro da conta/região deve ser exibida como erro acionável, sem declarar o provisionamento concluído.
 - **RN-003:** O bucket não recebe objetos nem dados; o fluxo termina com sua destruição.
 - **RN-004:** O bucket não pode permitir acesso público, deve manter ACLs desativadas e exigir HTTPS conforme os controles definidos nos RF-003 e RF-005.
 - **RN-005:** Os recursos AWS usados na validação devem ser removidos antes de encerrar o exercício.
@@ -60,7 +60,7 @@ Como aluno da especialização em Engenharia de Dados, demonstrar conhecimento d
 ## 6. Fluxos
 
 ### FL-001 — Principal
-1. O aluno define um nome globalmente único para o bucket.
+1. O aluno define um prefixo para o bucket; Terraform deriva o nome no namespace `account-regional`.
 2. Executa `terraform init` e revisa `terraform plan`.
 3. Executa `terraform apply` e confirma a criação.
 4. Usa AWS CLI para validar existência e configurações de segurança.
@@ -72,7 +72,7 @@ Nenhum fluxo alternativo é necessário para esta entrega.
 
 ### FL-003 — Erros
 - Falha em `init`, `plan`, `apply`, validação ou `destroy`: interromper, mostrar o comando e a mensagem retornada, sem declarar sucesso.
-- Colisão de nome ou permissão insuficiente: informar a causa retornada; corrigir o nome ou permissões e repetir.
+- Colisão no namespace da conta/região ou permissão insuficiente: informar a causa retornada; corrigir o prefixo ou permissões e repetir.
 - Falha parcial no `apply`: manter o state e usar Terraform para limpar os recursos antes de concluir.
 - Falha no `destroy` por bucket não vazio: remover o conteúdo e repetir `terraform destroy`. Resposta 403 durante validação AWS CLI indica problema de permissão e não é tratada como sucesso.
 
@@ -92,7 +92,7 @@ Nenhum fluxo alternativo é necessário para esta entrega.
 ## 8. Dependências e riscos
 
 - O aluno precisa ter Terraform e AWS CLI disponíveis e uma identidade AWS com permissões suficientes para criar, consultar e excluir o bucket e suas configurações.
-- O nome de bucket precisa estar disponível; colisões interrompem o `apply` e exigem outro nome.
+- O nome derivado precisa estar disponível no namespace da conta/região; colisões interrompem o `apply` e exigem outro prefixo.
 - O destroy depende de o bucket estar vazio. Nenhum dado será enviado pelo exercício.
 - SSE-S3 é a escolha de criptografia para manter o exercício simples; o AWS S3 aplica SSE-S3 por padrão a novos objetos e não cobra tarifa adicional pela criptografia em si.
 - Logs de acesso entregues a outro bucket S3 não têm tarifa de entrega, mas a armazenagem é cobrada; CloudTrail data events e métricas de requisição têm cobranças adicionais. Esses componentes foram excluídos por decisão do usuário para limitar esforço e custo.
@@ -104,7 +104,8 @@ Nenhum fluxo alternativo é necessário para esta entrega.
 | PM | Aprovado pelo usuário | Credenciais/permissões existentes são pré-requisito; nome configurável e único; tratar falha de destroy em bucket não vazio. |
 | PO | Aprovado pelo usuário | Critérios incluem comandos AWS CLI e resultados esperados; IAM não é provisionado pelo SDD. |
 | BA | Aprovado pelo usuário | Bucket vazio; validar a política HTTPS pela configuração declarada, sem teste HTTP adicional. |
-| Usuário | Aguardando | Gate final do PRD. |
+| Solution Architect | Aprovado pelo usuário | Namespace `account-regional`; nome derivado do prefixo, conta e região. |
+| Usuário | Aprovado em 2026-11-07 | Alinhamento de RF-001, RN-002, fluxo e risco ao prefixo + namespace `account-regional`, conforme a SPEC aprovada. |
 
 **Questões em aberto:** nenhuma.
 
