@@ -20,6 +20,6 @@
 - [x] 3.2 Confirmar identidade `lab02-terraform`, conta `325422573352`, região `us-east-1`, VPC default e cobertura de subnets em pelo menos duas AZs.
 - [x] 3.3 Gerar e revisar o plano; exigir somente recursos RDS/subnet group/security group/outputs novos, sem alterações ou destruições em SQS/Lambda.
 - [x] 3.4 Registrar estimativa mensal atualizada para instância, gp3, backups/snapshot e Secrets Manager, confrontar com o pedido de menor custo possível e aplicar somente após autorização operacional explícita.
-- [ ] 3.5 Após apply autorizado, verificar status, classe/engine/storage, encryption, backup, deletion protection, endpoint privado, ausência de ingress, secret ARN, outputs e state.
+- [x] 3.5 Após apply autorizado, verificar status, classe/engine/storage, encryption, backup, deletion protection, endpoint privado, ausência de ingress, secret ARN, outputs e state.
 - [x] 3.6 Documentar o procedimento seguro para desligar proteção, criar snapshot final e encerrar os recursos no mesmo state sem apagar evidência de custos ou credenciais.
 

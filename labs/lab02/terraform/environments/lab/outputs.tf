@@ -49,7 +49,7 @@ output "processor_function_arn" {
 }
 
 output "processor_execution_role_arn" {
-  description = "ARN da execution role de logging da função preparatória."
+  description = "ARN da execution role da função preparatória."
   value       = module.processor.execution_role_arn
 }
 
@@ -69,7 +69,7 @@ output "database_arn" {
 }
 
 output "database_endpoint" {
-  description = "Endpoint DNS privado do RDS; ainda sem conectividade de aplicação."
+  description = "Endpoint DNS privado do RDS; a conectividade de rede está restrita ao SG da Lambda."
   value       = module.database.endpoint
 }
 
@@ -89,6 +89,11 @@ output "database_master_user_secret_arn" {
 }
 
 output "database_security_group_id" {
-  description = "Security group dedicado do RDS, sem regras ingress nesta mudança."
+  description = "Security group dedicado do RDS, com ingress PostgreSQL restrito ao SG da Lambda."
   value       = module.database.security_group_id
+}
+
+output "processor_security_group_id" {
+  description = "Security group da Lambda sem ingress e com egress PostgreSQL restrito ao RDS."
+  value       = aws_security_group.processor.id
 }

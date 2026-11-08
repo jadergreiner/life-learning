@@ -1,10 +1,10 @@
 # Infraestrutura do LAB02
 
-Este root Terraform gerencia no mesmo state local a fila principal e DLQ SQS, a função preparatória `lab02-processor` e uma instância PostgreSQL em Amazon RDS. A Lambda continua sem trigger/event source mapping, VPC, acesso ao RDS, secrets ou permissões SQS. O handler somente retorna `{"status":"ready"}`.
+Este root Terraform gerencia no mesmo state local a fila principal e DLQ SQS, a função preparatória `lab02-processor` e uma instância PostgreSQL em Amazon RDS. A Lambda usa subnet default da AZ do RDS e SG sem ingress, com egress TCP/5432 somente ao SG do banco; o SG do RDS aceita apenas essa origem. A função continua sem trigger/event source mapping, credenciais, secret ou permissões SQS/RDS. O handler somente retorna `{"status":"ready"}`.
 
 ## Alvo e identidade
 
-O alvo é a conta `325422573352`, região `us-east-1`. Use o perfil AWS CLI `lab02-terraform` para Terraform; não use `certificacao` para Terraform. A validação STS encerra o plano quando a conta não corresponde. O usuário `lab02-terraform` preserva as policies inline `Lab02TerraformSQS` e `Lab02TerraformLambda`. A policy managed adicional `Lab02TerraformRDS` está documentada em `iam-policy-lab02-terraform-rds.json`; ela limita alterações aos recursos nomeados do LAB02 e limita a descoberta de security groups e VPC. A policy foi validada com IAM Access Analyzer.
+O alvo é a conta `325422573352`, região `us-east-1`. Use o perfil `lab02-terraform` para Terraform; não use `certificacao`. A validação STS encerra o plano quando a conta não corresponde. As políticas locais de referência para o deployer estão em `iam-policy-lab02-terraform-lambda.json` e `iam-policy-lab02-terraform-rds.json`; alterações nas políticas efetivamente anexadas ao usuário exigem atualização administrativa. A role da Lambda precisa da policy gerenciada `AWSLambdaVPCAccessExecutionRole` para ENIs.
 
 Terraform `>= 1.9.0` e AWS CLI devem estar disponíveis. O arquivo local `terraform.tfvars` define perfil, conta, região e parâmetros; não salve credenciais AWS nele. State, backups, planos e tfvars são ignorados pelo Git. Preserve state e seus backups para reconciliar ou remover os recursos pelo mesmo root.
 
@@ -18,10 +18,11 @@ Terraform `>= 1.9.0` e AWS CLI devem estar disponíveis. O arquivo local `terraf
 | Backup automático | 1 dia |
 | Deletion protection | habilitada |
 | Acesso público | desabilitado |
-| Ingress do security group | nenhum; egress padrão AWS para `0.0.0.0/0` |
+| Ingress do security group RDS | TCP/5432 somente do SG Lambda LAB02 |
+| Egress do security group Lambda | TCP/5432 somente para o SG RDS LAB02 |
 | Master password | gerenciada pelo RDS no Secrets Manager |
 
-O módulo descobre a VPC default e todas as subnets dinamicamente e exige cobertura em pelo menos duas AZs para o DB subnet group. Não cria VPC, NAT Gateway nem conectividade da aplicação. O security group não aceita tráfego de entrada; mantém egress IPv4 padrão da AWS. O endpoint é privado e ainda não pode ser alcançado pela Lambda. Outputs contêm endpoint, porta, database name e ARN do secret, nunca o valor da credencial. A credencial master não deve ser usada pela aplicação.
+O módulo descobre a VPC default e todas as subnets dinamicamente e exige cobertura em pelo menos duas AZs para o DB subnet group. Para a Lambda, seleciona subnet default na AZ Single-AZ atual do RDS. Não cria VPC, NAT Gateway ou VPC endpoint. A conectividade de rede não configura usuário ou credencial da aplicação e não ativa processamento. Outputs contêm endpoint, porta, database name e ARN do secret, nunca o valor da credencial. A credencial master não deve ser usada pela aplicação.
 
 ## Estimativa de custo recorrente
 
@@ -50,7 +51,7 @@ terraform plan -out=lab02.tfplan
 terraform show -no-color lab02.tfplan
 ```
 
-Confirme conta, região, VPC/subnets e que o plano só adiciona recursos do banco, sem alterações ou destruições em SQS/Lambda. Revise a estimativa e o teto mensal. **Não execute apply até a revisão do plano e do custo e uma autorização operacional explícita para este banco.** Não use `-auto-approve`. Após autorização específica:
+Confirme conta, região, VPC/subnets e que o plano não substitui o banco nem destrói SQS/Lambda e contém apenas as regras SG restritas e VPC config previstas. Revise a estimativa e o teto mensal. **Não execute apply até revisar o plano e custo e receber autorização operacional explícita para a mudança.** Não use `-auto-approve`.
 
 ```powershell
 terraform apply lab02.tfplan

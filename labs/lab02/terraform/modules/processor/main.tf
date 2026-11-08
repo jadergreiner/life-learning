@@ -20,6 +20,11 @@ resource "aws_iam_role_policy_attachment" "processor_logs" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
+resource "aws_iam_role_policy_attachment" "processor_vpc" {
+  role       = aws_iam_role.processor.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
 resource "aws_cloudwatch_log_group" "processor" {
   name              = "/aws/lambda/${var.function_name}"
   retention_in_days = var.log_retention_days
@@ -37,8 +42,14 @@ resource "aws_lambda_function" "processor" {
   timeout          = var.timeout_seconds
   architectures    = ["x86_64"]
 
+  vpc_config {
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
+  }
+
   depends_on = [
     aws_cloudwatch_log_group.processor,
     aws_iam_role_policy_attachment.processor_logs,
+    aws_iam_role_policy_attachment.processor_vpc,
   ]
 }

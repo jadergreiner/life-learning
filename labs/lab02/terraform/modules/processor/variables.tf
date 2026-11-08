@@ -53,3 +53,13 @@ variable "log_retention_days" {
     error_message = "log_retention_days deve ser um período de retenção aceito pelo CloudWatch Logs."
   }
 }
+
+variable "subnet_ids" {
+  description = "Subnets privadas na Availability Zone do RDS para a configuração VPC da Lambda."
+  type        = list(string)
+}
+
+variable "security_group_ids" {
+  description = "Security groups dedicados da função Lambda."
+  type        = list(string)
+}

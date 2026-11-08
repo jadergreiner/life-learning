@@ -7,6 +7,8 @@
       "Action": [
         "ec2:DescribeAvailabilityZones",
         "ec2:DescribeSecurityGroups",
+        "ec2:DescribeSecurityGroupRules",
+        "ec2:DescribeSecurityGroupRules",
         "ec2:DescribeSubnets",
         "ec2:DescribeVpcAttribute",
         "ec2:DescribeVpcs",
@@ -41,7 +43,10 @@
         "rds:CreateDBInstance",
         "rds:AddTagsToResource"
       ],
-      "Resource": "arn:aws:rds:us-east-1:325422573352:db:lab02-postgres",
+      "Resource": [
+        "arn:aws:rds:us-east-1:325422573352:db:lab02-postgres",
+        "arn:aws:rds:us-east-1:325422573352:subgrp:lab02-postgres-subnets"
+      ],
       "Condition": {
         "StringEquals": {
           "aws:RequestTag/Environment": "lab",
@@ -145,6 +150,25 @@
         "StringEquals": {
           "aws:RequestTag/Lab": "LAB02",
           "aws:RequestTag/Environment": "lab"
+        }
+      }
+    },
+    {
+      "Sid": "ManageLab02ProcessorSecurityGroupRules",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:AuthorizeSecurityGroupEgress",
+        "ec2:RevokeSecurityGroupEgress",
+        "ec2:AuthorizeSecurityGroupIngress",
+        "ec2:RevokeSecurityGroupIngress"
+      ],
+      "Resource": "arn:aws:ec2:us-east-1:325422573352:security-group/*",
+      "Condition": {
+        "ArnEquals": {
+          "ec2:Vpc": "arn:aws:ec2:us-east-1:325422573352:vpc/vpc-0f797dd8f97951106"
+        },
+        "StringEquals": {
+          "aws:ResourceTag/Lab": "LAB02"
         }
       }
     },

@@ -1,16 +1,17 @@
 # ED-05 U2 — AWS | Contrato experimental do laboratório
 
-**Estado:** a fila SQS Standard e a DLQ vazias estão provisionadas na conta correta `325422573352` e região `us-east-1`. As filas da tentativa inicial na conta `437537458973` foram removidas. A sessão pedagógica U2.1 e o fluxo de processamento continuam não iniciados.  
-**Data de registro:** 06/11/2026 (Brasília).  
+**Estado (atualizado em 08/11/2026):** SQS/DLQ, Lambda preparatória `lab02-processor` e PostgreSQL privado em RDS `lab02-postgres` estão provisionados na conta `325422573352`, região `us-east-1`. As filas da tentativa inicial na conta `437537458973` foram removidas. A sessão pedagógica U2.1 e o fluxo de processamento continuam não iniciados.  
+**Data de registro original:** 06/11/2026 (Brasília).  
 **Esfera:** AWS (2 de 3: Local → AWS → Databricks obrigatórias no piloto).  
 **Método:** autonomia B — desafio independente I0, intervenções I1–I3 somente quando solicitadas/necessárias.  
-**Governança:** a autorização operacional registrada em 07/11/2026 limita-se às duas filas SQS vazias, sem tráfego da aplicação, na conta `325422573352` e região `us-east-1`. A tentativa anterior usou a conta `437537458973` e foi removida. Foi criado o usuário IAM `lab02-terraform` com política restrita aos nomes da fila e DLQ deste laboratório. Não foram provisionados Lambda, RDS, rede ou CloudWatch; qualquer etapa adicional requer autorização e estimativa próprias. Não alterar cadência oficial de oito posições, iniciar sessão automaticamente, aprovar competência integral ou presumir custos reais.
+**Governança:** a autorização operacional registrada em 07/11/2026 cobriu as filas SQS; uma autorização explícita posterior cobriu a criação do PostgreSQL RDS em 08/11/2026 após revisão de plano e custos. O usuário IAM `lab02-terraform` mantém as policies de SQS/Lambda e a policy managed de provisão RDS. A Lambda permanece preparatória, sem trigger, VPC ou permissões de aplicação; o banco permanece sem schema, usuário de aplicação e ingress. Qualquer integração ou alteração AWS futura requer autorização e estimativa próprias. Não alterar a cadência oficial de oito posições, iniciar sessão automaticamente, aprovar competência integral ou presumir custos reais.
 
 ## Origem e continuidade
 
 - U1 Local concluída pedagogicamente segundo registro canônico no Notion; relatório do GitHub informa 12 testes aprovados, sem reexecução independente do Conselho.
 - Fonte operacional e pedagógica: [Notion — U1 Local](https://app.notion.com/p/40f02f2729f9819da78cffed04628caa).
 - Artefatos anteriores: [feature/lab01](https://github.com/jadergreiner/life-learning/tree/feature/lab01).
+- Baseline e roteiro de fases para futuras integrações: [Plano de integração do LAB02](../labs/lab02/integration-plan.md).
 - U2 introduz falhas distribuídas do SQS e da Lambda; não é simples cópia do laboratório Local. U3 Databricks permanece obrigatória, em contexto analítico.
 
 ## Problema de negócio
@@ -54,7 +55,7 @@ Divergência: profundidade de infraestrutura. Síntese: arquitetura mínima que 
 
 ## Limites e pré-condições
 
-- Sem infraestrutura ativa nem alteração da cadência por este registro.
+- Sem processamento integrado nem alteração da cadência por este registro.
 - Antes de executar: decidir região/conta autorizada, estimativa de custos, teto, alertas, credenciais/segredos, acesso de rede ao RDS, permissões IAM e plano de teardown.
 - Não publicar segredos ou dados reais em repositório público.
 - Dimensionar visibility timeout, timeout Lambda, concorrência, batch size e política de DLQ somente após raciocínio independente/validação. Custos variam com região, tempo, VPC e recursos alocados.

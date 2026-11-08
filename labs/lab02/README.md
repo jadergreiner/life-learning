@@ -1,11 +1,15 @@
 # LAB02 — ED-05 U2 AWS (Planejamento)
 
-**Estado: fila SQS e DLQ provisionadas em 07/11/2026 na conta correta `325422573352`, região `us-east-1`; sessão pedagógica e processamento ainda não iniciados.**  
+**Estado: SQS/DLQ, Lambda preparatória e PostgreSQL em RDS provisionados em `325422573352`, região `us-east-1`; sessão pedagógica U2.1 e processamento integrado ainda não iniciados.**  
 **Método: três esferas obrigatórias, autonomia B, desafio I0 sem solução.**
 
-O LAB02 aplica os princípios de idempotência e confiabilidade aprendidos no LAB01 a um contexto distribuído AWS com SQS Standard, Lambda e PostgreSQL em RDS. A fila `lab02-sqs-20261107` e a DLQ `lab02-sqs-20261107-dlq` estão vazias em `us-east-1` na conta `325422573352`. A tentativa anterior na conta `437537458973` foi removida. Foi criado o usuário IAM dedicado `lab02-terraform` com acesso restrito ao ciclo de vida dessas filas. Não foram criados produtor, consumidor, Lambda ou RDS. Nenhuma sessão foi iniciada.
+O LAB02 aplica princípios de confiabilidade distribuída a SQS Standard, Lambda e PostgreSQL em RDS. O root Terraform do ambiente `lab` compõe a fila `lab02-sqs-20261107`, a DLQ `lab02-sqs-20261107-dlq`, a função preparatória `lab02-processor` e o banco `lab02-postgres`. A tentativa inicial na conta `437537458973` foi removida. O usuário IAM dedicado `lab02-terraform` tem políticas de provisionamento do ambiente; a execution role da Lambda permanece limitada a logs.
+
+Ainda não existe produtor nem processamento integrado: a Lambda só responde `{"status":"ready"}`, não consome SQS, não está associada à VPC e não acessa o RDS. O banco permanece sem schema ou usuário de aplicação, privado e sem ingress. Nenhuma sessão pedagógica foi iniciada.
 
 O contrato, as contestações R6 e os critérios AWS-01–AWS-07 estão documentados em [docs/ed05-u2-aws.md](../../docs/ed05-u2-aws.md). Consulte o documento antes de continuar a implementação ou integrar outros serviços.
+
+Consulte também o [plano de integração](integration-plan.md) para baseline, gaps, decisões independentes e sequência sugerida. Ele não substitui autorização operacional nem inicia U2.1.
 
 ## Primeiro desafio independente (I0)
 

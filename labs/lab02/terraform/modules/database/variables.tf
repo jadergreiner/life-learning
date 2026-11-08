@@ -81,6 +81,11 @@ variable "deletion_protection" {
   default     = true
 }
 
+variable "lambda_security_group_id" {
+  description = "Security group da Lambda autorizada a conectar ao PostgreSQL do LAB02."
+  type        = string
+}
+
 variable "final_snapshot_identifier" {
   description = "Identificador do snapshot final. Atualize para um nome único antes de cada novo ciclo de teardown/recriação."
   type        = string

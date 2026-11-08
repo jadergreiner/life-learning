@@ -39,7 +39,10 @@
       "Resource": "arn:aws:iam::325422573352:role/lab02-processor-execution",
       "Condition": {
         "ArnEquals": {
-          "iam:PolicyARN": "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+          "iam:PolicyARN": [
+            "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+            "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+          ]
         }
       }
     },

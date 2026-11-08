@@ -39,6 +39,11 @@ output "subnet_group_name" {
 }
 
 output "security_group_id" {
-  description = "Security group do banco, sem regras ingress nesta etapa."
+  description = "Security group dedicado do banco."
   value       = aws_security_group.database.id
+}
+
+output "availability_zone" {
+  description = "Availability Zone atual da instância RDS Single-AZ."
+  value       = aws_db_instance.database.availability_zone
 }

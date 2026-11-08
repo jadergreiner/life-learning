@@ -1,6 +1,6 @@
 # Módulo database do LAB02
 
-Este módulo cria somente a fundação privada de PostgreSQL em Amazon RDS. Não cria schema, tabelas, usuário de aplicação, dados, conectividade de Lambda ou regras de entrada.
+Este módulo cria a fundação privada de PostgreSQL em Amazon RDS e permite ingress TCP/5432 somente do security group da Lambda LAB02 fornecido como entrada. Não cria schema, tabelas, usuário de aplicação ou dados.
 
 ## Defaults
 
@@ -21,13 +21,13 @@ Todos os parâmetros configuráveis ficam em `variables.tf`. A disponibilidade d
 
 ## Rede e credenciais
 
-O módulo descobre a VPC default e suas subnets por data sources; não fixa IDs. A criação do DB subnet group falha se as subnets não cobrem pelo menos duas Availability Zones. O security group dedicado não declara ingress e preserva a regra egress padrão da AWS (`0.0.0.0/0`). A Lambda do LAB02 não está associada à VPC e não consegue conectar-se ao endpoint nesta etapa.
+O módulo descobre a VPC default e suas subnets por data sources; não fixa IDs. A criação do DB subnet group falha se as subnets não cobrem pelo menos duas Availability Zones. O SG do banco aceita somente TCP/5432 do SG da Lambda LAB02. A Lambda precisa estar na mesma AZ do RDS e seu SG egress limita-se a esse destino/porta.
 
 `manage_master_user_password` deixa o RDS gerar e gerir a credencial em AWS Secrets Manager. O módulo expõe somente o ARN do secret, nunca sua senha. A chave padrão do Secrets Manager e a credencial gerenciada podem gerar custos adicionais. Acesso posterior exigirá uma mudança separada de rede e uma role de aplicação de privilégio mínimo.
 
 ## Outputs
 
-O módulo publica identificador, ARN e resource ID do RDS, endpoint privado, porta, nome do database, ARN do secret, nome do subnet group e ID do security group. O endpoint não implica conectividade autorizada.
+O módulo publica identificador, ARN e resource ID do RDS, endpoint privado, porta, nome do database, ARN do secret, nome do subnet group, ID do security group e AZ da instância. O ARN do secret não fornece credenciais à Lambda.
 
 ## Ciclo de vida
 
