@@ -1,0 +1,76 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ManageLab02ProcessorFunction",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:CreateFunction",
+        "lambda:DeleteFunction",
+        "lambda:GetFunction",
+        "lambda:GetFunctionConfiguration",
+        "lambda:ListTags",
+        "lambda:UpdateFunctionCode",
+        "lambda:UpdateFunctionConfiguration",
+        "lambda:ListVersionsByFunction",
+        "lambda:GetFunctionCodeSigningConfig"
+      ],
+      "Resource": "arn:aws:lambda:us-east-1:325422573352:function:lab02-processor"
+    },
+    {
+      "Sid": "ManageLab02ProcessorExecutionRole",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateRole",
+        "iam:DeleteRole",
+        "iam:GetRole",
+        "iam:ListAttachedRolePolicies",
+        "iam:ListRolePolicies"
+      ],
+      "Resource": "arn:aws:iam::325422573352:role/lab02-processor-execution"
+    },
+    {
+      "Sid": "AttachOnlyLambdaBasicExecutionRole",
+      "Effect": "Allow",
+      "Action": [
+        "iam:AttachRolePolicy",
+        "iam:DetachRolePolicy"
+      ],
+      "Resource": "arn:aws:iam::325422573352:role/lab02-processor-execution",
+      "Condition": {
+        "ArnEquals": {
+          "iam:PolicyARN": "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        }
+      }
+    },
+    {
+      "Sid": "PassOnlyProcessorRoleToLambda",
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": "arn:aws:iam::325422573352:role/lab02-processor-execution",
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": "lambda.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "ManageLab02ProcessorLogGroup",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:DeleteLogGroup",
+        "logs:DeleteRetentionPolicy",
+        "logs:PutRetentionPolicy",
+        "logs:ListTagsForResource"
+      ],
+      "Resource": "arn:aws:logs:us-east-1:325422573352:log-group:/aws/lambda/lab02-processor"
+    },
+    {
+      "Sid": "DescribeLogGroupsForTerraformRefresh",
+      "Effect": "Allow",
+      "Action": "logs:DescribeLogGroups",
+      "Resource": "*"
+    }
+  ]
+}

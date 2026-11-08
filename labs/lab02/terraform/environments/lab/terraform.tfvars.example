@@ -1,0 +1,11 @@
+# Copy to terraform.tfvars locally. Never put AWS credentials in this file.
+aws_region          = "us-east-1"
+aws_profile         = "default"
+approved_account_id = "000000000000"
+
+queue_name_prefix             = "lab02-sqs-example"
+message_retention_seconds     = 345600
+dlq_message_retention_seconds = 1209600
+visibility_timeout_seconds    = 30
+receive_wait_time_seconds     = 20
+max_receive_count             = 10

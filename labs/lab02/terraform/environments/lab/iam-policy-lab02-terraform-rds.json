@@ -1,0 +1,165 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DiscoverNetworkAndRdsState",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeAvailabilityZones",
+        "ec2:DescribeSecurityGroups",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeVpcAttribute",
+        "ec2:DescribeVpcs",
+        "rds:DescribeDBInstances",
+        "rds:DescribeDBSubnetGroups",
+        "rds:DescribeEvents",
+        "rds:ListTagsForResource"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "ManageLab02DatabaseInstance",
+      "Effect": "Allow",
+      "Action": [
+        "rds:AddTagsToResource",
+        "rds:CreateDBInstance",
+        "rds:ModifyDBInstance",
+        "rds:RemoveTagsFromResource",
+        "rds:DeleteDBInstance"
+      ],
+      "Resource": "arn:aws:rds:us-east-1:325422573352:db:lab02-postgres",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Lab": "LAB02"
+        }
+      }
+    },
+    {
+      "Sid": "CreateAndDeleteLab02Database",
+      "Effect": "Allow",
+      "Action": [
+        "rds:CreateDBInstance",
+        "rds:AddTagsToResource"
+      ],
+      "Resource": "arn:aws:rds:us-east-1:325422573352:db:lab02-postgres",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/Environment": "lab",
+          "aws:RequestTag/Lab": "LAB02"
+        }
+      }
+    },
+    {
+      "Sid": "ManageLab02DatabaseSubnetGroup",
+      "Effect": "Allow",
+      "Action": [
+        "rds:CreateDBSubnetGroup",
+        "rds:AddTagsToResource"
+      ],
+      "Resource": "arn:aws:rds:us-east-1:325422573352:subgrp:lab02-postgres-subnets",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/Lab": "LAB02",
+          "aws:RequestTag/Environment": "lab"
+        }
+      }
+    },
+    {
+      "Sid": "DeleteLab02DatabaseSubnetGroup",
+      "Effect": "Allow",
+      "Action": [
+        "rds:RemoveTagsFromResource",
+        "rds:DeleteDBSubnetGroup"
+      ],
+      "Resource": "arn:aws:rds:us-east-1:325422573352:subgrp:lab02-postgres-subnets",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Lab": "LAB02"
+        }
+      }
+    },
+    {
+      "Sid": "ManageLab02DatabaseSecurityGroup",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:CreateSecurityGroup"
+      ],
+      "Resource": "arn:aws:ec2:us-east-1:325422573352:vpc/vpc-0f797dd8f97951106"
+    },
+    {
+      "Sid": "TagLab02DatabaseSecurityGroupOnCreate",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:CreateTags"
+      ],
+      "Resource": "arn:aws:ec2:us-east-1:325422573352:security-group/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/Lab": "LAB02",
+          "aws:RequestTag/Environment": "lab"
+        },
+        "StringLike": {
+          "ec2:CreateAction": "CreateSecurityGroup"
+        }
+      }
+    },
+    {
+      "Sid": "DeleteLab02DatabaseSecurityGroup",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DeleteSecurityGroup",
+        "ec2:DeleteTags"
+      ],
+      "Resource": "arn:aws:ec2:us-east-1:325422573352:security-group/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Lab": "LAB02"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRdsManagedMasterPassword",
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:CreateSecret",
+        "secretsmanager:TagResource"
+      ],
+      "Resource": "arn:aws:secretsmanager:us-east-1:325422573352:secret:rds!*"
+    },
+    {
+      "Sid": "DescribeSecretsManagerEncryptionKey",
+      "Effect": "Allow",
+      "Action": [
+        "kms:DescribeKey"
+      ],
+      "Resource": "arn:aws:kms:us-east-1:325422573352:key/*"
+    },
+    {
+      "Sid": "CreateLab02SecurityGroupInDefaultVpc",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:CreateSecurityGroup"
+      ],
+      "Resource": "arn:aws:ec2:us-east-1:325422573352:security-group/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/Lab": "LAB02",
+          "aws:RequestTag/Environment": "lab"
+        }
+      }
+    },
+    {
+      "Sid": "CreateRdsServiceLinkedRole",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateServiceLinkedRole"
+      ],
+      "Resource": "arn:aws:iam::325422573352:role/aws-service-role/rds.amazonaws.com/AWSServiceRoleForRDS",
+      "Condition": {
+        "StringLike": {
+          "iam:AWSServiceName": "rds.amazonaws.com"
+        }
+      }
+    }
+  ]
+}

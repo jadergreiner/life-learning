@@ -1,10 +1,10 @@
 # ED-05 U2 — AWS | Contrato experimental do laboratório
 
-**Estado:** especificação e contestação do Conselho (proposta registrada, sem início operacional).  
+**Estado:** a fila SQS Standard e a DLQ vazias estão provisionadas na conta correta `325422573352` e região `us-east-1`. As filas da tentativa inicial na conta `437537458973` foram removidas. A sessão pedagógica U2.1 e o fluxo de processamento continuam não iniciados.  
 **Data de registro:** 06/11/2026 (Brasília).  
 **Esfera:** AWS (2 de 3: Local → AWS → Databricks obrigatórias no piloto).  
 **Método:** autonomia B — desafio independente I0, intervenções I1–I3 somente quando solicitadas/necessárias.  
-**Governança:** não alterar cadência oficial de oito posições; não provisionar serviços, iniciar sessão, aprovar competência integral ou presumir custos reais.
+**Governança:** a autorização operacional registrada em 07/11/2026 limita-se às duas filas SQS vazias, sem tráfego da aplicação, na conta `325422573352` e região `us-east-1`. A tentativa anterior usou a conta `437537458973` e foi removida. Foi criado o usuário IAM `lab02-terraform` com política restrita aos nomes da fila e DLQ deste laboratório. Não foram provisionados Lambda, RDS, rede ou CloudWatch; qualquer etapa adicional requer autorização e estimativa próprias. Não alterar cadência oficial de oito posições, iniciar sessão automaticamente, aprovar competência integral ou presumir custos reais.
 
 ## Origem e continuidade
 
@@ -67,7 +67,7 @@ Divergência: profundidade de infraestrutura. Síntese: arquitetura mínima que 
 
 **Pergunta a frio:** quais garantias pertencem ao SQS, quais à Lambda e quais precisam permanecer no PostgreSQL?
 
-Aguardar autorização operacional específica antes de abrir uma sessão no Notion ou provisionar recursos.
+A sessão pedagógica U2.1 continua aguardando autorização e não foi aberta no Notion. Para provisionar qualquer recurso além da fila SQS, da DLQ e do usuário IAM dedicado já criados, obter autorização operacional específica e revisar os custos primeiro.
 
 ## Referências
 
