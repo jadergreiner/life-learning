@@ -3,7 +3,7 @@
 | Componente | Estado verificado | Integração |
 |---|---|---|
 | Plugin Life Learning | Publicado 0.2.0 | Instruções de sessões e conselho experimental |
-| Notion | Configuração 8 posições; banco de sessões e catálogo | Fonte oficial dos fatos operacionais |
+| Notion | Configuração 7 posições pela LL-ADR-002; C20/P1 histórica aberta requer conciliação | Fonte oficial dos fatos operacionais |
 | Google Drive | PDI e referências técnicas identificados | Documentos de apoio, não substitutos de Notion |
 | GitHub | Este repositório | Documentação versionada |
 | Recall | Uso previsto | Recuperação de conceitos; não foi validada sync automática |
