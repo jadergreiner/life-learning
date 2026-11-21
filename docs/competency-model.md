@@ -44,3 +44,12 @@ Fonte normativa experimental: [catálogo do Notion](https://app.notion.com/p/40c
 - Requerer decisão de política de entrega por criticidade e discussão de duplicidade, omissão e validade temporal, com garantias condicionais e riscos residuais explícitos.
 - No encerramento de uma revisão extra, registrar as evidências no catálogo e o fato da sessão no Notion sem inventar minutos ou alterar ciclo/posição. A revisão espaçada usa o deck Recall canônico definido em [contrato de fontes](sources-of-truth.md).
 - O próximo gate de comprovação de autonomia é um laboratório reproduzível e uma reavaliação sem consulta; a cadência regular não é afetada pelo diagnóstico.
+
+
+## LL-ADR-002 — atualização normativa de 21/11/2026
+
+**Estado:** sete posições aprovadas; operacionalização documentada no Notion. P1 AWS AIF-C01, P2 PREPARAÇÃO, P3 SYSTEMS DESIGN, P4 ROADMAP DATA ENGINEER, P5 LEITURA, P6 INGLÊS, P7 DATABRICKS. CASE-SPEC-ITAU fora da cadência ativa, mantendo-se integralmente seu histórico e repositório. Esta seção prevalece sobre snapshots e referências anteriores a oito posições.
+
+**Modelo híbrido:** SparkLens integrador preferencial e laboratórios independentes quando tecnicamente mais adequados. Contrato: estudar → implementar → testar → diagnosticar → defender → evidenciar; I0 independente, A1 assistido declarado, V1 adversarial, R1 retenção, GATE multidimensional N0–N4 sem média compensatória. Máximo de duas competências técnicas em aprofundamento; inglês e leitura mantêm entregas próprias sem código compulsório. Encerramento de sessão não aprova competência. Reavaliar o método após dois ciclos novos completos.
+
+**Bloqueio de transição:** C20/P1 CASE-SPEC-ITAU estava aberta em 21/11/2026 19h11 BRT. Não classificar como concluída, interrompida ou cancelada sem evidência e confirmação; não criar sessão nova enquanto não houver reconciliação e marco de corte explícito. Não reescrever posições/ciclos históricos. Fonte operacional: [Notion Configuração](https://app.notion.com/p/3d402f2729f981c88688f3acb9ba7b20); [LL-ADR-002 Notion](https://app.notion.com/p/41f02f2729f9812c967ad7040e86b87a).
