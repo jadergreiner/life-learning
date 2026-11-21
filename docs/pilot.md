@@ -1,6 +1,6 @@
 # Piloto adaptativo — protocolo
 
-**Situação:** desenho aprovado para experimentar; não substitui a cadência de oito posições.
+**Situação:** protocolo de observação do método LL-ADR-002, aprovado para sete posições em 21/11/2026. A transição de sessões novas permanece bloqueada até reconciliação de C20/P1 histórica.
 
 1. Diagnosticar sem consulta Spark, SQL/modelagem, confiabilidade de pipelines e System Design.
 2. Separar evidências observadas de hipóteses; ausência de evidência = N0.
