@@ -1,38 +1,30 @@
 # Life Learning
 
-Sistema de desenvolvimento profissional orientado por competências, com execução de estudos no Notion e apoio de um conselho técnico-pedagógico virtual.
+Sistema de desenvolvimento profissional por competências, orientado à implementação independente, testes, diagnóstico e defesa técnica.
 
-## Estado (01/11/2026)
+## Configuração aprovada em 21/11/2026 — LL-ADR-002
 
-- **Operação vigente:** cadência de 8 posições (Notion). Não alterada.
-- **Experimento:** aprendizagem adaptativa, avaliação multidimensional e até duas competências ativas após diagnóstico.
-- **Plugin publicado:** Life Learning 0.2.0. A publicação do plugin é independente deste repositório.
-- **Objetivo dominante:** excelência como Engenheiro de Dados Sênior; Especialista/Staff como horizonte complementar.
+| Posição | Trilha |
+|---|---|
+| P1 | AWS AIF-C01 |
+| P2 | PREPARAÇÃO |
+| P3 | SYSTEMS DESIGN |
+| P4 | ROADMAP DATA ENGINEER |
+| P5 | LEITURA |
+| P6 | INGLÊS |
+| P7 | DATABRICKS |
 
-## Arquitetura e fontes de verdade
+Modelo **C híbrido**: [SparkLens](https://github.com/jadergreiner/SparkLens) é projeto integrador preferencial e laboratórios independentes complementam a prática. CASE-SPEC-ITAU é preservado como histórico, fora da cadência ativa.
 
-| Sistema | Responsabilidade | Autoridade |
-|---|---|---|
-| Notion — configuração | Cadência, ordem, duração operacional | Fonte operacional |
-| Notion — Life Learning | Sessões, horários, ciclos, conclusões e resultados | Fonte factual |
-| Notion — catálogo | Competências e regras do piloto | Fonte pedagógica experimental |
-| Google Drive — PDI | Estratégia de carreira histórica | Referência estratégica |
-| Google Drive — referências | Material técnico e bibliografia | Referência de conteúdo |
-| Plugin Life Learning | Orquestração de sessões e recomendações | Consumidor/aplicador de regras |
-| GitHub — este repositório | Versionamento de especificações, contratos e decisões | Fonte do código e documentação, não dos registros |
+**Bloqueio operacional:** a sessão histórica C20/P1 CASE-SPEC-ITAU permanece aberta até resolução factual. Nenhuma sessão nova deve ser criada antes de reconciliar esse registro e estabelecer o marco de corte da nova sequência.
 
-**Não existe sincronização automática/bidirecional implantada.** As conexões são explicitadas em [docs/sources-of-truth.md](docs/sources-of-truth.md). Evitar sobrescrita cruzada e dados privados em repositório público.
+## Fontes e decisões
 
-## Documentos
+- [LL-ADR-002](docs/decisions/LL-ADR-002-seven-position-hybrid.md)
+- [Fontes de verdade](docs/sources-of-truth.md)
+- [Competências e avaliação](docs/competency-model.md)
+- [Integrações](docs/integrations.md)
+- [Protocolo de observação](docs/pilot.md)
+- [ADR-0001 autoridade](docs/decisions/ADR-0001-source-authority.md)
 
-- [Fontes de verdade e sincronização](docs/sources-of-truth.md)
-- [Conselho e modelo de competências](docs/competency-model.md)
-- [Protocolo do piloto](docs/pilot.md)
-- [Integrações e estado](docs/integrations.md)
-- [Decisões arquiteturais](docs/decisions/ADR-0001-source-authority.md)
-
-## Próximos passos
-
-Diagnosticar Spark, SQL/modelagem, confiabilidade e System Design; deliberar as duas competências ativas; testar o método sem alterar a cadência oficial; só migrar mediante aprovação expressa.
-
-Projeto experimental. Nenhuma classificação de domínio ou resultado de sessão é presumida.
+Notion permanece autoridade para cadência, histórico e catálogo; GitHub versiona contratos. Recall é autoridade de flashcards e retenção. Sem sincronização bidirecional automática nem exportação de dados privados.
