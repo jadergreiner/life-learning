@@ -33,9 +33,9 @@
 - **Drive:** não modificar documentos estratégicos históricos sem delimitar mudanças e preservar a versão original.
 - **Auditabilidade:** registrar em docs/decisions o motivo e links, não dados sensíveis.
 
-## Cadência vigente
+## Cadência vigente — LL-ADR-002 (21/11/2026)
 
-P1 CASE-SPEC-ITAU; P2 AWS AIF-C01; P3 PREPARAÇÃO; P4 SYSTEMS DESIGN; P5 ROADMAP DATA ENGINEER; P6 LEITURA; P7 INGLÊS; P8 DATABRICKS. P8 → P1 incrementando ciclo. Bloco padrão 50 minutos, pausa 10. Esta tabela é **snapshot** de 29/10/2026, não configuração executável: o Notion prevalece.
+P1 AWS AIF-C01; P2 PREPARAÇÃO; P3 SYSTEMS DESIGN; P4 ROADMAP DATA ENGINEER; P5 LEITURA; P6 INGLÊS; P7 DATABRICKS. P7 → P1 incrementando ciclo. CASE-SPEC-ITAU permanece apenas no histórico. Referência 50+10 min é organização, não duração comprovada nem gate. Marco de corte pendente de conciliação da sessão aberta C20/P1 histórica. O Notion prevalece.
 
 ## Recall — deck canônico do Life Learning (02/11/2026)
 
